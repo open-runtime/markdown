@@ -96,7 +96,19 @@ class InlineParser {
     }
   }
 
+  int? internalStart;
+  int? internalEnd;
+
+  bool hasMatch = false;
+
   List<Node> parse() {
+    /// 1. do a regex match on the contents of the anchor path and get the start/end within
+    /// the line itself, so that we can properly position the parsing index for the content before/after
+    if (hasMatch) {
+      internalStart = 5;
+      internalEnd = 25;
+    }
+
     while (!isDone) {
       // A right bracket (']') is special. Hitting this character triggers the
       // "look for link or image" procedure.
@@ -109,6 +121,16 @@ class InlineParser {
 
       // See if the current text matches any defined Markdown syntax.
       if (syntaxes.any((syntax) => syntax.tryMatch(this))) continue;
+
+
+      /// -> If we have the start, we can go from 0 -> start
+      /// -> Skip from start -> end
+      /// -> Then go from end -> length
+      if (internalStart != null && pos == internalStart) {
+        /// 1. Write the anchor from internalStart -> internalEnd
+        /// 2. advanceBy(internalEnd - internalStart) || maybe set the global `start` to the end, unsure
+        /// 3. continue
+      }
 
       // If we got here, it's just text.
       advanceBy(1);

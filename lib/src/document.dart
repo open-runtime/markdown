@@ -97,6 +97,7 @@ class Document {
     for (var i = 0; i < nodes.length; i++) {
       final node = nodes[i];
       if (node is UnparsedContent) {
+        print('PARSING NODE: ${node.textContent}');
         final inlineNodes = parseInline(node.textContent);
         nodes.removeAt(i);
         nodes.insertAll(i, inlineNodes);
